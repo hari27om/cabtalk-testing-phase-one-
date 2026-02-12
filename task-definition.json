@@ -1,0 +1,54 @@
+{
+    "family": "gxi-cab-portal-backend-task",
+    "networkMode": "awsvpc",
+    "executionRoleArn": "arn:aws:iam::521120286813:role/ecsTaskExecutionRole",
+    "cpu": "1024",
+    "memory": "3072",
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "containerDefinitions": [
+        {
+            "name": "gxi-cab-portal-backend-container",
+            "image": "public.ecr.aws/l9d5n3q7/gxi-cab-portal-backend:68",
+            "cpu": 0,
+            "essential": true,
+            "portMappings": [
+                {
+                    "name": "gxi-cab-portal-backend-container-5002-tcp",
+                    "containerPort": 5002,
+                    "hostPort": 5002,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "MONGO_URI",
+                    "value": "mongodb+srv://vivekverma:vivekvermagxi@cab-talk.gus9m.mongodb.net/cabdb"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/gxi-cab-portal-backend-task",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}
