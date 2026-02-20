@@ -58,8 +58,8 @@ export async function sendPickupTemplateBefore10Min(phoneNumber, name) {
 export async function sendBufferEndTemplate(phoneNumber, name) {
   const firstName = buildFirstName(name);
   const payload = {
-    template_name: "",
-    broadcast_name: `error_${Date.now()}`,
+    template_name: "update_passenger_move_cab",
+    broadcast_name: `update_passenger_move_cab_${Date.now()}`,
     receivers: [
       {
         whatsappNumber: (phoneNumber || "").replace(/\D/g, ""),
