@@ -169,3 +169,25 @@ export async function cancelPendingNotificationsForPassenger(passengerId, journe
     throw error;
   }
 }
+
+export async function cancelBufferEndNotificationsForPassenger(passengerId, journeyId) {
+  try {
+    const res = await Notification.updateMany(
+      { passengerId, journeyId },
+      { $set: { "triggers.$[t].status": "cancelled" } },
+      {
+        arrayFilters: [
+          { "t.type": "bufferEnd", "t.status": { $in: ["pending", "processing"] } }
+        ]
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("❌ cancelBufferEndNotificationsForPassenger error:", {
+      message: error.message,
+      passengerId,
+      journeyId,
+    });
+    throw error;
+  }
+}

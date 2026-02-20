@@ -10,7 +10,7 @@ import { sendPickupConfirmationMessage } from "../utils/PickUpPassengerSendTem.j
 import { sendOtherPassengerSameShiftUpdateMessage } from "../utils/InformOtherPassenger.js";
 import { sendDropConfirmationMessage } from "../utils/dropConfirmationMsg.js";
 import { startRideUpdatePassengerController } from "../utils/rideStartUpdatePassenger.js";
-import { cancelBufferEndTrigger } from "../utils/notificationService.js";
+import { cancelBufferEndNotificationsForPassenger } from "../utils/notificationService.js";
 import { storeJourneyNotifications } from "../utils/notificationService.js";
 import { isScheduledToday } from "../utils/weekoffPassengerHelper.js";
 
@@ -259,9 +259,8 @@ export const handleWatiWebhook = asyncHandler(async (req, res) => {
     });
     journey.processedWebhookEvents.push(eventId);
     await journey.save();
-
     try {
-      await cancelBufferEndTrigger(passenger._id, journey._id);
+      await cancelBufferEndNotificationsForPassenger(String(passenger._id), String(journey._id));
     } catch (err) {
       console.error("Failed to cancel bufferEnd trigger:", err);
     }
