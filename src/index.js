@@ -97,8 +97,8 @@ app.use((err, req, res, next) => {
 });
 
 const MONGO_URI =
-  // "mongodb+srv://vivekverma:vivekvermagxi@cab-talk.gus9m.mongodb.net/cabDB";
-  "mongodb+srv://hariomtri27:12341234@cdb.3a41aii.mongodb.net/CDB";
+  "mongodb+srv://vivekverma:vivekvermagxi@cab-talk.gus9m.mongodb.net/cabDB";
+  // "mongodb+srv://hariomtri27:12341234@cdb.3a41aii.mongodb.net/CDB";
 
 await mongoose
   .connect(MONGO_URI)
