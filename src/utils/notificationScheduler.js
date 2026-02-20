@@ -56,6 +56,7 @@ export async function sendPickupTemplateBefore10Min(phoneNumber, name) {
 }
 
 export async function sendBufferEndTemplate(phoneNumber, name) {
+  console("this is the buffer called now");
   const firstName = buildFirstName(name);
   const payload = {
     template_name: "update_passenger_move_cab",
