@@ -31,28 +31,42 @@ if (!global.__notificationCronStarted) {
 
       const journeys = await Journey.find({ _id: { $in: journeyIds } })
         .populate("Asset Driver", "isActive phoneNumber Employee_Name")
+        .populate({
+          path: "boardedPassengers.passenger",
+          model: "Passenger",
+          select: "_id Employee_PhoneNumber",
+        })
         .lean();
 
       const journeyMap = new Map();
-      journeys.forEach((j) => journeyMap.set(j._id.toString(), j));
+      journeys.forEach((j) => journeyMap.set(String(j._id), j));
 
       for (const notif of pendingNotifications) {
         const { _id: notifId, journeyId, phoneNumber, name, triggers } = notif;
-        const journey = journeyMap.get(journeyId.toString());
+        const journey = journeyMap.get(String(journeyId));
 
         const triggersToSend = triggers.filter((t) => {
           if (t.status !== "pending") return false;
-
           const triggerTime = new Date(t.triggerTime);
           const triggerHHmm = triggerTime.toTimeString().slice(0, 5);
-
           return triggerHHmm === currentHHmm;
         });
 
         if (triggersToSend.length === 0) continue;
+        const boardedSet = new Set(
+          (journey?.boardedPassengers || []).map((bp) => {
+            if (!bp) return "";
+            if (typeof bp.passenger === "object" && bp.passenger?._id) return String(bp.passenger._id);
+            return String(bp.passenger || "");
+          })
+        );
 
         for (const trigger of triggersToSend) {
           try {
+            if (boardedSet.has(String(notif.passengerId))) {
+              await updateTriggerStatus(notifId, trigger.triggerId, "cancelled");
+              continue;
+            }
             if (journey?.Asset?.isActive) {
               if (trigger.type === "before10Min") {
                 await sendPickupTemplateBefore10Min(phoneNumber, name);
